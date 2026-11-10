@@ -1,0 +1,233 @@
+{
+  "name": "Data Sync Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sId",
+              "name": "spreadsheetId",
+              "type": "string",
+              "value": "SPREADSHEET_ID_PLACEHOLDER"
+            },
+            {
+              "id": "tId",
+              "name": "tableName",
+              "type": "string",
+              "value": "sales_data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "global_vars_1",
+      "name": "GlobalVars",
+      "position": [
+        256,
+        240
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "SPREADSHEET_ID_PLACEHOLDER",
+          "mode": "list",
+          "cachedResultName": "Vendas_Enterprise",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_PLACEHOLDER/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1328362374,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_PLACEHOLDER/edit#gid=1328362374"
+        },
+        "options": {}
+      },
+      "id": "google_sheets_1",
+      "name": "GoogleSheets",
+      "position": [
+        480,
+        240
+      ],
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLESHEETSOAUTH2API_ID",
+          "name": "Default googleSheetsOAuth2Api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "data_venda",
+              "type": "string",
+              "value": "={{ $json.data_venda }}"
+            },
+            {
+              "id": "f2",
+              "name": "produto",
+              "type": "string",
+              "value": "={{ $json.produto }}"
+            },
+            {
+              "id": "f3",
+              "name": "regiao",
+              "type": "string",
+              "value": "={{ $json.regiao }}"
+            },
+            {
+              "id": "f4",
+              "name": "cidade",
+              "type": "string",
+              "value": "={{ $json.cidade }}"
+            },
+            {
+              "id": "f5",
+              "name": "canal",
+              "type": "string",
+              "value": "={{ $json.canal }}"
+            },
+            {
+              "id": "f6",
+              "name": "representante",
+              "type": "string",
+              "value": "={{ $json.Representante }}"
+            },
+            {
+              "id": "f7",
+              "name": "quantidade",
+              "type": "number",
+              "value": "={{ $json.quantidade }}"
+            },
+            {
+              "id": "f8",
+              "name": "preco_unitario",
+              "type": "number",
+              "value": "={{ $json.preco_unitario }}"
+            },
+            {
+              "id": "f9",
+              "name": "receita_total",
+              "type": "number",
+              "value": "={{ $json.receita_total }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "map_fields_1",
+      "name": "MapFields",
+      "position": [
+        704,
+        240
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "tableId": "={{ $node[\"GlobalVars\"].json.tableName }}",
+        "dataToSend": "autoMapInputData"
+      },
+      "id": "supabase_1",
+      "name": "Supabase",
+      "position": [
+        928,
+        240
+      ],
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASEAPI_ID",
+          "name": "Default supabaseApi"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        240
+      ],
+      "id": "1421a5f4-a3a4-42e1-abd5-55d7e9359015",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "GlobalVars": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "GoogleSheets",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "GoogleSheets": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "MapFields",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "MapFields": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Supabase",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "GlobalVars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "74f2d3eb-0abf-4604-bb3d-f1dac6c042b6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bf8234c766601606e2fa4759ede9d5d3e333743e2ed20db93ec9d9c3ee994db9"
+  },
+  "id": "MaGgjQQcWRwGjZVO",
+  "tags": []
+}

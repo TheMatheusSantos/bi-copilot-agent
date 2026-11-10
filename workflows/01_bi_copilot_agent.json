@@ -1,0 +1,159 @@
+{
+  "name": "BI Copilot: AI Data Analyst",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Você é o Analista de BI do negócio. Sua missão é fornecer dados e insights estratégicos.\n\nREGRAS DE APRESENTAÇÃO (OBRIGATÓRIO):\n1. NUNCA exiba código SQL ou comandos técnicos na resposta final.\n2. FORMATAÇÃO VISUAL: Use Markdown para tornar a leitura agradável.\n   - Use **negrito** para destacar valores, cidades ou indicadores-chave.\n   - Use bullet points (•) se listar mais de um item.\n   - Deixe espaços entre parágrafos para um layout limpo.\n3. TOM DE VOZ: Educado, executivo e direto ao ponto.\n\nFLUXO DE TRABALHO:\n1. Identifique a dúvida do usuário.\n2. Chame a ferramenta 'Executar SQL' com a query necessária.\n3. Pegue os dados retornados e transforme-os em uma resposta analítica.\n4. Finalize sempre com um INSIGHT estratégico breve sobre a performance de vendas.\n\nTabela: 'sales_data' (colunas: data_venda, produto, regiao, cidade, canal, representante, quantidade, preco_unitario, receita_total).\n\nExemplo de resposta esperada:\nOlá, gestor. \n\nA cidade com menor volume de consumo no período foi **[Cidade]**, com apenas **[Valor]** em vendas.\n\n• **Insight:** Notamos uma baixa penetração da linha Whey nesta região. Sugerimos uma campanha de degustação em PDVs locais para fortalecer a conexão com o bem-estar da família."
+        }
+      },
+      "id": "agent_id",
+      "name": "AI Data Analyst",
+      "position": [
+        224,
+        240
+      ],
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-flash-preview",
+        "options": {
+          "temperature": 0.2,
+          "topP": 0.9
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        128,
+        448
+      ],
+      "id": "064c7593-d580-48b6-aad0-3d4fed8274ee",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YOUR_GOOGLEPALMAPI_ID",
+          "name": "Default googlePalmApi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "chat_trigger_id",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        240
+      ],
+      "webhookId": "4e20b91f-c4f5-4411-a2f7-4867e700598b"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "r5Vl8bmd0i9ZpUkE",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/r5Vl8bmd0i9ZpUkE",
+          "cachedResultName": "Tool: SQL Executor"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "id": "sql_tool_final_id",
+      "name": "Executar SQL",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        448
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        448
+      ],
+      "id": "b8c3006f-3936-412b-8dc8-b4e91c930917",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Data Analyst",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Data Analyst",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Data Analyst",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executar SQL": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Data Analyst",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "44f01671-a307-4c77-ab23-4895f72c6a20",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bf8234c766601606e2fa4759ede9d5d3e333743e2ed20db93ec9d9c3ee994db9"
+  },
+  "id": "CagJNMkJVgDBAsvr",
+  "tags": []
+}

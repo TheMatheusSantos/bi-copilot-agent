@@ -1,0 +1,92 @@
+{
+  "name": "Tool: SQL Executor",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_id_sub",
+      "name": "trigger",
+      "position": [
+        0,
+        0
+      ],
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ $json.sql || $json.query }}",
+        "options": {}
+      },
+      "id": "postgres_id_sub",
+      "name": "Postgres",
+      "position": [
+        208,
+        0
+      ],
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_ID",
+          "name": "Default postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($input.all().length === 0) {\n  return [{ result: \"Nenhum dado encontrado para esta consulta SQL.\" }];\n}\nreturn $input.all();"
+      },
+      "id": "code_fix_id",
+      "name": "Tratar Vazio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Postgres",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "Tratar Vazio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "bb0ba261-a13e-4343-af9d-b8baf463ffee",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bf8234c766601606e2fa4759ede9d5d3e333743e2ed20db93ec9d9c3ee994db9"
+  },
+  "id": "r5Vl8bmd0i9ZpUkE",
+  "tags": []
+}
